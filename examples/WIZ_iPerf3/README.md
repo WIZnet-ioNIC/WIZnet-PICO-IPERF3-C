@@ -25,7 +25,7 @@ If you are using WIZnet's PICO board, you can skip '1. Combine...'
 
 To test the WIZ_iPerf3 example, minor settings shall be done in code.
 
-1. Setup SPI port and pin in 'wizchip_spi.h' in 'WIZnet-PICO-C/port/ioLibrary_Driver/' directory.
+1. Setup SPI port and pin in 'wizchip_spi.h' in 'WIZnet-PICO-IPERF3-C/port/ioLibrary_Driver/' directory.
 
 Setup the SPI interface you use.
 
@@ -92,7 +92,7 @@ Make sure you are **not defining `USE_PIO`** in your setup when using DMA:
 // #define USE_PIO
 ```
 
-2. Setup network configuration such as IP in 'WIZ_iPerf3.c' which is the iperf3 example in 'WIZnet-PICO-C/examples/WIZ_iPerf3/' directory.
+2. Setup network configuration such as IP in 'WIZ_iPerf3.c' which is the iperf3 example in 'WIZnet-PICO-IPERF3-C/examples/WIZ_iPerf3/' directory.
 
 Setup IP and other network settings to suit your network environment.
 
@@ -133,7 +133,7 @@ static wiz_NetInfo g_net_info =
 };
 ```
 
-3. Setup iperf3 configuration in 'WIZ_iPerf3.c' in 'WIZnet-PICO-C/examples/WIZ_iPerf3/' directory.
+3. Setup iperf3 configuration in 'WIZ_iPerf3.c' in 'WIZnet-PICO-IPERF3-C/examples/WIZ_iPerf3/' directory.
 
 
 
@@ -141,7 +141,7 @@ static wiz_NetInfo g_net_info =
 
 1. After completing the iperf3 example configuration, click 'build' in the status bar at the bottom of Visual Studio Code or press the 'F7' button on the keyboard to build.
 
-2. When the build is completed, 'WIZ_iPerf3.uf2' is generated in 'WIZnet-PICO-C/build/examples/WIZ_iPerf3/' directory.
+2. When the build is completed, 'WIZ_iPerf3.uf2' is generated in 'WIZnet-PICO-IPERF3-C/build/examples/WIZ_iPerf3/' directory.
 
 
 
@@ -181,7 +181,7 @@ Link
 
 [link-tera_term]: https://osdn.net/projects/ttssh2/releases/
 [link-iperf3]: https://iperf.fr/iperf-download.php
-[link-raspberry_pi_pico_usb_mass_storage]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-C/blob/main/static/images/WIZ_iperf3/raspberry_pi_pico_usb_mass_storage.png
-[link-connect_to_serial_com_port]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-C/blob/main/static/images/WIZ_iperf3/connect_to_serial_com_port.png
+[link-raspberry_pi_pico_usb_mass_storage]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-IPERF3-C/blob/main/static/images/WIZ_iperf3/raspberry_pi_pico_usb_mass_storage.png
+[link-connect_to_serial_com_port]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-IPERF3-C/blob/main/static/images/WIZ_iperf3/connect_to_serial_com_port.png
 [link-connect_to_serial_com_port2]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-IPERF3-C/blob/main/static/images/WIZ_iperf3/connect_to_serial_com_port2.png
 [link-iperf3_2]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-IPERF3-C/blob/main/static/images/WIZ_iperf3/iperf3_2.png
