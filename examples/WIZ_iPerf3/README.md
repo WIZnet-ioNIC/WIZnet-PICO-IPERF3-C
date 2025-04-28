@@ -181,7 +181,7 @@ Link
 
 [link-tera_term]: https://osdn.net/projects/ttssh2/releases/
 [link-iperf3]: https://iperf.fr/iperf-download.php
-[link-raspberry_pi_pico_usb_mass_storage]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-C/blob/main/static/images/sntp/raspberry_pi_pico_usb_mass_storage.png
-[link-connect_to_serial_com_port]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-C/blob/main/static/images/sntp/connect_to_serial_com_port.png
-[link-connect_to_serial_com_port2]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-C/blob/main/static/images/sntp/connect_to_serial_com_port2.png
-[link-iperf3_2]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-C/blob/main/static/images/sntp/iperf3_2.png
+[link-raspberry_pi_pico_usb_mass_storage]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-C/blob/main/static/images/WIZ_iperf3/raspberry_pi_pico_usb_mass_storage.png
+[link-connect_to_serial_com_port]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-C/blob/main/static/images/WIZ_iperf3/connect_to_serial_com_port.png
+[link-connect_to_serial_com_port2]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-IPERF3-C/blob/main/static/images/WIZ_iperf3/connect_to_serial_com_port2.png
+[link-iperf3_2]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-IPERF3-C/blob/main/static/images/WIZ_iperf3/iperf3_2.png
