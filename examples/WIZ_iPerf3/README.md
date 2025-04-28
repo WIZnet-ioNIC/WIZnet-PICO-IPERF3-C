@@ -1,10 +1,10 @@
-# How to Test SNTP Example
+# How to Test WIZ_iPerf3 Example
 
 
 
 ## Step 1: Prepare software
 
-The following serial terminal program is required for SNTP example test, download and install from below link.
+The following serial terminal program is required for iPerf3 example test, download and install from below link.
 
 - [**Tera Term**][link-tera_term]
 - [**iperf 3**][link-iperf]
@@ -21,9 +21,9 @@ If you are using WIZnet's PICO board, you can skip '1. Combine...'
 
 
 
-## Step 3: Setup SNTP Example
+## Step 3: Setup WIZ_iPerf3 Example
 
-To test the SNTP example, minor settings shall be done in code.
+To test the WIZ_iPerf3 example, minor settings shall be done in code.
 
 1. Setup SPI port and pin in 'wizchip_spi.h' in 'WIZnet-PICO-C/port/ioLibrary_Driver/' directory.
 
@@ -151,7 +151,7 @@ static wiz_NetInfo g_net_info =
 
 ![][link-raspberry_pi_pico_usb_mass_storage]
 
-2. Drag and drop 'wizchip_sntp.uf2' onto the USB mass storage device 'RPI-RP2' or 'RP2350'.
+2. Drag and drop 'WIZ_iPerf3.uf2' onto the USB mass storage device 'RPI-RP2' or 'RP2350'.
 
 3. Connect to the serial COM port of the pico with Tera Term.
 
