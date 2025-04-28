@@ -1,69 +1,98 @@
-# How to Test iPerf Example
+# How to Test SNTP Example
 
 
 
 ## Step 1: Prepare software
 
-The following serial terminal programs are required for iPerf example test, download and install from below links.
-
-Note that iPerf uses iPerf 2.0.9.
+The following serial terminal program is required for SNTP example test, download and install from below link.
 
 - [**Tera Term**][link-tera_term]
-- [**iPerf**][link-iPerf]
-
-
+- [**iperf 3**][link-iperf]
 
 ## Step 2: Prepare hardware
 
-If you are using W5100S-EVB-Pico, W5500-EVB-Pico, W55RP20-EVB-Pico, W5100S-EVB-Pico2 or W5500-EVB-Pico2, you can skip '1. Combine...'
+If you are using WIZnet's PICO board, you can skip '1. Combine...'
 
-1. Combine WIZnet Ethernet HAT with Raspberry Pi Pico.
+1. If you are using WIZnet Ethernet HAT, Combine it with Raspberry Pi Pico.
 
-2. Connect ethernet cable to WIZnet Ethernet HAT, W5100S-EVB-Pico, W5500-EVB-Pico, W55RP20-EVB-Pico, W5100S-EVB-Pico2 or W5500-EVB-Pico2 ethernet port.
+2. Connect ethernet cable to your PICO board ethernet port.
 
-3. Connect Raspberry Pi Pico, W5100S-EVB-Pico or W5500-EVB-Pico to desktop or laptop using 5 pin micro USB cable. W55RP20-EVB-Pico, W5100S-EVB-Pico2 or W5500-EVB-Pico2 require a USB Type-C cable.
+3. Connect your PICO board to desktop or laptop using USB cable. 
 
 
 
-## Step 3: Setup iPerf Example
+## Step 3: Setup SNTP Example
 
-To test the iPerf example, minor settings shall be done in code.
+To test the SNTP example, minor settings shall be done in code.
 
-1. Setup SPI port and pin in 'w5x00_spi.h' in 'WIZnet-PICO-C/port/ioLibrary_Driver/' directory.
+1. Setup SPI port and pin in 'wizchip_spi.h' in 'WIZnet-PICO-C/port/ioLibrary_Driver/' directory.
 
 Setup the SPI interface you use.
-- If you use the W5100S-EVB-Pico, W5500-EVB-Pico, W5100S-EVB-Pico2 or W5500-EVB-Pico2,
+
+### For **W55RP20-EVB-PICO**:
+If you are using the **W55RP20-EVB-PICO**, enable `USE_PIO` and configure as follows:
 
 ```cpp
-/* SPI */
+#if (DEVICE_BOARD_NAME == W55RP20_EVB_PICO)
+
+#define USE_PIO
+
+#define PIN_SCK   21
+#define PIN_MOSI  23
+#define PIN_MISO  22
+#define PIN_CS    20
+#define PIN_RST   25
+#define PIN_IRQ   24
+
+```
+
+---
+
+### For **W6300-EVB-PICO** or **W6300-EVB-PICO2**:
+If you are using the **W6300-EVB-PICO** or **W6300-EVB-PICO2**, use the following pinout and SPI clock divider configuration:
+
+```cpp
+#elif (DEVICE_BOARD_NAME == W6300_EVB_PICO || DEVICE_BOARD_NAME == W6300_EVB_PICO2)
+#define USE_PIO
+
+#define PIO_IRQ_PIN             15
+#define PIO_SPI_SCK_PIN         17
+#define PIO_SPI_DATA_IO0_PIN    18
+#define PIO_SPI_DATA_IO1_PIN    19
+#define PIO_SPI_DATA_IO2_PIN    20
+#define PIO_SPI_DATA_IO3_PIN    21
+#define PIN_CS                  16
+#define PIN_RST                 22
+
+
+```
+
+---
+
+### For other generic SPI boards
+If you are not using any of the above boards, you can fall back to a default SPI configuration:
+
+```cpp
+#else
+
 #define SPI_PORT spi0
 
-#define PIN_SCK 18
-#define PIN_MOSI 19
-#define PIN_MISO 16
-#define PIN_CS 17
-#define PIN_RST 20
+#define SPI_SCK_PIN  18
+#define SPI_MOSI_PIN 19
+#define SPI_MISO_PIN 16
+#define SPI_CS_PIN   17
+#define RST_PIN      20
+
+#endif
 ```
 
-If you want to test with the iPerf example using SPI DMA, uncomment USE_SPI_DMA.
+Make sure you are **not defining `USE_PIO`** in your setup when using DMA:
 
 ```cpp
-/* Use SPI DMA */
-//#define USE_SPI_DMA // if you want to use SPI DMA, uncomment.
-```
-- If you use the W55RP20-EVB-Pico,
-```cpp
-/* SPI */
-#define USE_SPI_PIO
-
-#define PIN_SCK 21
-#define PIN_MOSI 23
-#define PIN_MISO 22
-#define PIN_CS 20
-#define PIN_RST 25
+// #define USE_PIO
 ```
 
-2. Setup network configuration such as IP in 'w5x00_iperf.c' which is the iPerf example in 'WIZnet-PICO-C/examples/iperf/' directory.
+2. Setup network configuration such as IP in 'WIZ_iPerf3.c' which is the iperf3 example in 'WIZnet-PICO-C/examples/WIZ_iPerf3/' directory.
 
 Setup IP and other network settings to suit your network environment.
 
@@ -76,67 +105,73 @@ static wiz_NetInfo g_net_info =
         .sn = {255, 255, 255, 0},                    // Subnet Mask
         .gw = {192, 168, 11, 1},                     // Gateway
         .dns = {8, 8, 8, 8},                         // DNS server
-        .dhcp = NETINFO_STATIC                       // DHCP enable/disable
+        #if _WIZCHIP_ > W5500
+        .lla = {0xfe, 0x80, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00,
+                0x02, 0x08, 0xdc, 0xff,
+                0xfe, 0x57, 0x57, 0x25},             // Link Local Address
+        .gua = {0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00},             // Global Unicast Address
+        .sn6 = {0xff, 0xff, 0xff, 0xff,
+                0xff, 0xff, 0xff, 0xff,
+                0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00},             // IPv6 Prefix
+        .gw6 = {0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00},             // Gateway IPv6 Address
+        .dns6 = {0x20, 0x01, 0x48, 0x60,
+                0x48, 0x60, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x88, 0x88},             // DNS6 server
+        .ipmode = NETINFO_STATIC_ALL
+#else
+        .dhcp = NETINFO_STATIC        
+#endif
 };
 ```
 
-3. Setup iPerf configuration in 'w5x00_iperf.c' in 'WIZnet-PICO-C/examples/iperf/' directory.
-
-```cpp
-/* Port */
-#define PORT_IPERF 5001
-```
+3. Setup iperf3 configuration in 'WIZ_iPerf3.c' in 'WIZnet-PICO-C/examples/WIZ_iPerf3/' directory.
 
 
 
 ## Step 4: Build
 
-1. After completing the iPerf example configuration, click 'build' in the status bar at the bottom of Visual Studio Code or press the 'F7' button on the keyboard to build.
+1. After completing the iperf3 example configuration, click 'build' in the status bar at the bottom of Visual Studio Code or press the 'F7' button on the keyboard to build.
 
-2. When the build is completed, 'w5x00_iperf.uf2' is generated in 'WIZnet-PICO-C/build/examples/iperf/' directory.
+2. When the build is completed, 'WIZ_iPerf3.uf2' is generated in 'WIZnet-PICO-C/build/examples/WIZ_iPerf3/' directory.
 
 
 
 ## Step 5: Upload and Run
 
-1. While pressing the BOOTSEL button of Raspberry Pi Pico, W5100S-EVB-Pico, W5500-EVB-Pico, W55RP20-EVB-Pico, W5100S-EVB-Pico2 or W5500-EVB-Pico2 power on the board, the USB mass storage 'RPI-RP2' is automatically mounted.
+1. While pressing the BOOTSEL button of the Pico power on the board, the USB mass storage 'RPI-RP2' or 'RP2350' is automatically mounted.
 
 ![][link-raspberry_pi_pico_usb_mass_storage]
 
-2. Drag and drop 'w5x00_iperf.uf2' onto the USB mass storage device 'RPI-RP2'.
+2. Drag and drop 'wizchip_sntp.uf2' onto the USB mass storage device 'RPI-RP2' or 'RP2350'.
 
-3. Connect to the serial COM port of Raspberry Pi Pico, W5100S-EVB-Pico, W5500-EVB-Pico, W55RP20-EVB-Pico, W5100S-EVB-Pico2 or W5500-EVB-Pico2 with Tera Term.
+3. Connect to the serial COM port of the pico with Tera Term.
 
 ![][link-connect_to_serial_com_port]
 
 4. Reset your board.
 
-5. If the iPerf example works normally on Raspberry Pi Pico, W5100S-EVB-Pico, W5500-EVB-Pico, W55RP20-EVB-Pico, W5100S-EVB-Pico2 or W5500-EVB-Pico2, you can see the network information of Raspberry Pi Pico, W5100S-EVB-Pico, W5500-EVB-Pico, W55RP20-EVB-Pico, W5100S-EVB-Pico2 or W5500-EVB-Pico2 and the TCP server is open.
+![][link-connect_to_serial_com_port2]
 
-![][link-network_information]
+5. Open a PowerShell or Command Prompt window, navigate to the directory where iperf3 is installed, and enter the command:
 
-6. Run command prompt to enter the iPerf command and move to iPerf path.
-
-```cpp
-/* Change directory */
-// change to the 'iperf-x.x.x-winxx' directory.
-cd [user path]/iperf-x.x.x-winxx
-
-// e.g.
-cd D:/iperf-2.0.9-win64
+```cmd
+.\iperf3 -c 192.168.11.2 -t 10
 ```
-![][link-move_to_iperf_path]
 
-7. In the command prompt, enter the following command to connect to Raspberry Pi Pico, W5100S-EVB-Pico or W5500-EVB-Pico running as a TCP server and test.
+This will allow you to perform iperf3 communication as shown below.
+In my case, I set the PICO board’s IP address to 192.168.11.2 in the pico iperf project.
 
-```cpp
-/* Network performance measurement test */
-.\iperf -c [connecting to] -t [time in seconds to transmit for] -i [seconds between periodic bandwidth reports]
 
-// e.g.
-.\iperf -c 192.168.11.2 -t 20 -t 2
-```
-![][link-iperf_result]
+![][link-iperf3_2]
 
 
 
@@ -145,9 +180,8 @@ Link
 -->
 
 [link-tera_term]: https://osdn.net/projects/ttssh2/releases/
-[link-iPerf]: https://iperf.fr/iperf-download.php
-[link-raspberry_pi_pico_usb_mass_storage]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-C/blob/main/static/images/loopback/raspberry_pi_pico_usb_mass_storage.png
-[link-connect_to_serial_com_port]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-C/blob/main/static/images/loopback/connect_to_serial_com_port.png
-[link-network_information]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-IPERF-C/blob/main/static/images/iperf/network_information.png
-[link-move_to_iperf_path]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-IPERF-C/blob/main/static/images/iperf/move_to_iperf_path.png
-[link-iperf_result]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-IPERF-C/blob/main/static/images/iperf/iperf_result.png
+[link-iperf3]: https://iperf.fr/iperf-download.php
+[link-raspberry_pi_pico_usb_mass_storage]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-C/blob/main/static/images/sntp/raspberry_pi_pico_usb_mass_storage.png
+[link-connect_to_serial_com_port]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-C/blob/main/static/images/sntp/connect_to_serial_com_port.png
+[link-connect_to_serial_com_port2]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-C/blob/main/static/images/sntp/connect_to_serial_com_port2.png
+[link-iperf3_2]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-C/blob/main/static/images/sntp/iperf3_2.png
