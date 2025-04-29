@@ -1,1 +1,2 @@
-add_subdirectory(WIZ_iPerf3)
+add_subdirectory(iperf2)
+add_subdirectory(iperf3)

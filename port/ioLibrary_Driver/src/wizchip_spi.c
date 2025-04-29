@@ -280,7 +280,7 @@ void wizchip_initialize(void)
     /* W5x00, W6x00 initialize */
     uint8_t temp;
     #if (_WIZCHIP_ == W5100S)
-    uint8_t memsize[2][4] = {{8, 8, 0, 0}, {8, 8, 0, 0}};
+    uint8_t memsize[2][4] = {{4, 4, 0, 0}, {4, 4, 0, 0}};
     #elif (_WIZCHIP_ == W5500)
         uint8_t memsize[2][8] = {{8, 8, 0, 0, 0, 0, 0, 0}, {8, 8, 0, 0, 0, 0, 0, 0}};
     #elif (_WIZCHIP_ == W6100)
