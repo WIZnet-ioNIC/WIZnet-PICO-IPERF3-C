@@ -147,7 +147,6 @@ int main()
     /* Get network information */
     print_network_information(g_net_info);
 
-    socket(SOCKET_CTRL, Sn_MR_TCP, PORT_IPERF, 0);
     socket(SOCKET_CTRL, Sn_MR_TCP, PORT_IPERF, 0x20 );
     listen(SOCKET_CTRL);
 
