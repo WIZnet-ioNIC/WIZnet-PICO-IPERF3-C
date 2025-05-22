@@ -148,6 +148,7 @@ int main()
     print_network_information(g_net_info);
 
     socket(SOCKET_CTRL, Sn_MR_TCP, PORT_IPERF, 0);
+    socket(SOCKET_CTRL, Sn_MR_TCP, PORT_IPERF, 0x20 );
     listen(SOCKET_CTRL);
 
     while (1)
@@ -359,7 +360,7 @@ void start_iperf_test(Stats *stats, bool reverse, bool udp, uint8_t *dest_ip, ui
                 }
                 else
                 {
-                    recv_bytes = recv_iperf(SOCKET_DATA, (uint8_t *)g_iperf_buf, pack_len);
+                    recv_bytes = recv_iperf(SOCKET_DATA, (uint8_t *)g_iperf_buf, ETHERNET_BUF_MAX_SIZE - 1 );
                 }
 
                 iperf_stats_add_bytes(stats, recv_bytes);
