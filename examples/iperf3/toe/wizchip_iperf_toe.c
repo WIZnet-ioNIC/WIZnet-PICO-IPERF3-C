@@ -28,11 +28,11 @@
  * ----------------------------------------------------------------------------------------------------
  */
 /* Clock */
-// #define PLL_SYS_KHZ (133 * 1000)
-#define PLL_SYS_KHZ (90 * 1000)
+ #define PLL_SYS_KHZ (133 * 1000)
+// #define PLL_SYS_KHZ (90 * 1000)
 
 /* Buffer */
-#define ETHERNET_BUF_MAX_SIZE (1024 * 8)
+#define ETHERNET_BUF_MAX_SIZE (1024 * 16)
 
 /* Socket */
 #define SOCKET_DATA 0
@@ -65,7 +65,7 @@
 static wiz_NetInfo g_net_info =
     {
         .mac = {0x00, 0x08, 0xDC, 0x12, 0x34, 0x56}, // MAC address
-        .ip = {192, 168, 11, 2},                     // IP address
+        .ip = {192, 168, 11, 16},                     // IP address
         .sn = {255, 255, 255, 0},                    // Subnet Mask
         .gw = {192, 168, 11, 1},                     // Gateway
         .dns = {8, 8, 8, 8},                         // DNS server
@@ -131,7 +131,7 @@ int main()
     bool reverse = false;
     bool udp = false;
 
-    set_clock_khz();
+    // set_clock_khz();
     stdio_init_all();
 
     sleep_ms(3000);
@@ -359,7 +359,7 @@ void start_iperf_test(Stats *stats, bool reverse, bool udp, uint8_t *dest_ip, ui
                 }
                 else
                 {
-                    recv_bytes = recv_iperf(SOCKET_DATA, (uint8_t *)g_iperf_buf, ETHERNET_BUF_MAX_SIZE - 1 );
+                    recv_bytes = recv(SOCKET_DATA, (uint8_t *)g_iperf_buf, ETHERNET_BUF_MAX_SIZE -1 );
                 }
 
                 iperf_stats_add_bytes(stats, recv_bytes);
