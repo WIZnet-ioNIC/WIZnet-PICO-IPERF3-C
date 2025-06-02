@@ -145,7 +145,7 @@ int main()
     Stats stats;
 
     // Initialize network configuration
-    IP4_ADDR(&g_ip, 192, 168, 11, 102);
+    IP4_ADDR(&g_ip, 192, 168, 11, 2);
     IP4_ADDR(&g_mask, 255, 255, 255, 0);
     IP4_ADDR(&g_gateway, 192, 168, 11, 1);
 
