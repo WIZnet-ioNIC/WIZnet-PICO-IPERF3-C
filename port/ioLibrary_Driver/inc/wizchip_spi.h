@@ -15,6 +15,18 @@
  * ----------------------------------------------------------------------------------------------------
  */
 /* SPI */
+
+// for Iperf example
+#if (_WIZCHIP_ == W5100S)
+#define TX_RX_MAX_SIZE  4
+#elif (_WIZCHIP_ == W5500)
+#define TX_RX_MAX_SIZE  16
+#elif (_WIZCHIP_ == W6100)
+#define TX_RX_MAX_SIZE  16
+#elif (_WIZCHIP_ == W6300)
+#define TX_RX_MAX_SIZE 32
+#endif
+
 #if (DEVICE_BOARD_NAME == W55RP20_EVB_PICO)
 
 #define USE_PIO

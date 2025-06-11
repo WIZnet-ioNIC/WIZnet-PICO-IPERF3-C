@@ -40,7 +40,7 @@
 #define PLL_SYS_KHZ (90 * 1000)
 
 /* Buffer */
-#define ETHERNET_BUF_MAX_SIZE (1024 * 8)
+#define ETHERNET_BUF_MAX_SIZE (1024 * TX_RX_MAX_SIZE / 2)
 
 /* Socket */
 #define SOCKET_DATA 0
@@ -139,6 +139,8 @@ void exchange_results(Stats *stats);
  */
 int main()
 {
+    uint8_t memsize[2][8] = {{TX_RX_MAX_SIZE / 2 , TX_RX_MAX_SIZE / 2, 0, 0, 0, 0, 0, 0}, 
+                             {TX_RX_MAX_SIZE / 2 , TX_RX_MAX_SIZE / 2, 0, 0, 0, 0, 0, 0}};
     /* Initialize */
     bool reverse = false;
     uint8_t socket_status;
@@ -149,7 +151,7 @@ int main()
     IP4_ADDR(&g_mask, 255, 255, 255, 0);
     IP4_ADDR(&g_gateway, 192, 168, 11, 1);
 
-    set_clock_khz();
+   // set_clock_khz();
     stdio_init_all();
 
     sleep_ms(1000 * 3); // wait for 3 seconds
@@ -158,7 +160,11 @@ int main()
     wizchip_cris_initialize();
 
     wizchip_reset();
-    wizchip_initialize();
+    wizchip_initialize_whitout_buffer_set();
+
+    if (ctlwizchip(CW_INIT_WIZCHIP, (void *)memsize) == -1)
+        printf("wizchip initialized fail\n");
+
     wizchip_check();
 
     // Initialize LWIP in NO_SYS mode

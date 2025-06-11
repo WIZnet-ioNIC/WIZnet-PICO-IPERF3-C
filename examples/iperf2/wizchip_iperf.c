@@ -28,7 +28,7 @@
 #define PLL_SYS_KHZ (90 * 1000)
 
 /* Buffer */
-#define ETHERNET_BUF_MAX_SIZE (1024 * 16)
+#define ETHERNET_BUF_MAX_SIZE (1024 * TX_RX_MAX_SIZE )
 
 /* Socket */
 #define SOCKET_IPERF 0
@@ -96,19 +96,27 @@ static void set_clock_khz(void);
  */
 int main()
 {
+    uint8_t memsize[2][8] = {{TX_RX_MAX_SIZE  , 0, 0, 0, 0, 0, 0, 0}, 
+                             {TX_RX_MAX_SIZE  , 0, 0, 0, 0, 0, 0, 0}};
+
     /* Initialize */
     int retval = 0;
     uint32_t pack_len = 0;
 
-    set_clock_khz();
+    // set_clock_khz();
 
     stdio_init_all();
+    sleep_ms(3000);
 
     wizchip_spi_initialize();
     wizchip_cris_initialize();
 
     wizchip_reset();
-    wizchip_initialize();
+    wizchip_initialize_whitout_buffer_set();
+    
+    if (ctlwizchip(CW_INIT_WIZCHIP, (void *)memsize) == -1)
+        printf("wizchip initialized fail\n");
+    
     wizchip_check();
 
     network_initialize(g_net_info);
@@ -122,11 +130,10 @@ int main()
             case SOCK_ESTABLISHED :
                 while(1)
                 {
-
                     getsockopt(SOCKET_IPERF, SO_RECVBUF, &pack_len);
                     if (pack_len > 0)
                     {
-                        recv_iperf(SOCKET_IPERF, (uint8_t *)g_iperf_buf, ETHERNET_BUF_MAX_SIZE / 2);
+                        recv(SOCKET_IPERF, (uint8_t *)g_iperf_buf, ETHERNET_BUF_MAX_SIZE -1);
                     }  
                 }
             case SOCK_CLOSE_WAIT :
@@ -136,7 +143,7 @@ int main()
                 listen(SOCKET_IPERF);
                 break;
             case SOCK_CLOSED:
-                socket(SOCKET_IPERF, Sn_MR_TCP, PORT_IPERF, 0x00);
+                socket(SOCKET_IPERF, Sn_MR_TCP, PORT_IPERF, 0x20);
                 break;
             default:
                 break;

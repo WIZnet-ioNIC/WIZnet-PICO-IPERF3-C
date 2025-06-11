@@ -32,7 +32,7 @@
 // #define PLL_SYS_KHZ (90 * 1000)
 
 /* Buffer */
-#define ETHERNET_BUF_MAX_SIZE (1024 * 16)
+#define ETHERNET_BUF_MAX_SIZE (1024 * TX_RX_MAX_SIZE / 2)
 
 /* Socket */
 #define SOCKET_DATA 0
@@ -124,6 +124,8 @@ void exchange_results(Stats *stats);
  */
 int main()
 {
+    uint8_t memsize[2][8] = {{TX_RX_MAX_SIZE / 2 , TX_RX_MAX_SIZE / 2, 0, 0, 0, 0, 0, 0}, 
+                             {TX_RX_MAX_SIZE / 2 , TX_RX_MAX_SIZE / 2, 0, 0, 0, 0, 0, 0}};
     /* Initialize */
     uint8_t socket_status;
     Stats stats;
@@ -139,7 +141,11 @@ int main()
     wizchip_cris_initialize();
 
     wizchip_reset();
-    wizchip_initialize();
+    wizchip_initialize_whitout_buffer_set();
+
+    if (ctlwizchip(CW_INIT_WIZCHIP, (void *)memsize) == -1)
+        printf("wizchip initialized fail\n");
+    
     wizchip_check();
 
     network_initialize(g_net_info);
@@ -359,7 +365,7 @@ void start_iperf_test(Stats *stats, bool reverse, bool udp, uint8_t *dest_ip, ui
                 }
                 else
                 {
-                    recv_bytes = recv(SOCKET_DATA, (uint8_t *)g_iperf_buf, ETHERNET_BUF_MAX_SIZE -1 );
+                    recv_bytes = recv(SOCKET_DATA, (uint8_t *)g_iperf_buf, ETHERNET_BUF_MAX_SIZE / 4 );
                 }
 
                 iperf_stats_add_bytes(stats, recv_bytes);

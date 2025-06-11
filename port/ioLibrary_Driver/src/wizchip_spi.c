@@ -427,3 +427,44 @@ int32_t recv_iperf(uint8_t sn, uint8_t * buf, uint16_t len)
    return (int32_t)len;
 }
 
+
+void wizchip_initialize_whitout_buffer_set(void)
+{
+
+#ifdef USE_PIO
+    (*spi_handle)->frame_end();
+#if   (_WIZCHIP_ == W6300)
+    reg_wizchip_qspi_cbfunc((*spi_handle)->read_byte, (*spi_handle)->write_byte);
+#else
+    reg_wizchip_spi_cbfunc((*spi_handle)->read_byte, (*spi_handle)->write_byte);
+    reg_wizchip_spiburst_cbfunc((*spi_handle)->read_buffer, (*spi_handle)->write_buffer);
+#endif
+    reg_wizchip_cs_cbfunc((*spi_handle)->frame_start, (*spi_handle)->frame_end);
+
+#else
+    /* Deselect the FLASH : chip select high */
+    wizchip_deselect();
+    /* CS function register */
+    reg_wizchip_cs_cbfunc(wizchip_select, wizchip_deselect);
+    /* SPI function register */
+    #if (_WIZCHIP_ == W6100)
+    reg_wizchip_spi_cbfunc(wizchip_read, wizchip_write, wizchip_read_buf, wizchip_write_buf);
+    #else
+    reg_wizchip_spi_cbfunc(wizchip_read, wizchip_write);
+    #endif
+#endif
+#ifdef USE_SPI_DMA
+    reg_wizchip_spiburst_cbfunc(wizchip_read_burst, wizchip_write_burst);
+#endif
+
+    uint8_t temp;
+    /* Check PHY link status */
+    do
+    {
+        if (ctlwizchip(CW_GET_PHYLINK, (void *)&temp) == -1)
+        {
+            printf(" Unknown PHY link status\n");
+            return;
+        }
+    } while (temp == PHY_LINK_OFF);
+}
