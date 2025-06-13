@@ -365,7 +365,7 @@ void start_iperf_test(Stats *stats, bool reverse, bool udp, uint8_t *dest_ip, ui
                 }
                 else
                 {
-                    recv_bytes = recv(SOCKET_DATA, (uint8_t *)g_iperf_buf, ETHERNET_BUF_MAX_SIZE / 4 );
+                    recv_bytes = recv(SOCKET_DATA, (uint8_t *)g_iperf_buf, ETHERNET_BUF_MAX_SIZE -1 );
                 }
 
                 iperf_stats_add_bytes(stats, recv_bytes);

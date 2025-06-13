@@ -254,5 +254,5 @@ void print_network_information(wiz_NetInfo net_info);
 void print_ipv6_addr(uint8_t* name, uint8_t* ip6addr);
 
 int32_t recv_iperf(uint8_t sn, uint8_t * buf, uint16_t len);
-
+void wizchip_initialize_whitout_buffer_set(void);
 #endif /* _WIZCHIP_SPI_H_ */
