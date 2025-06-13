@@ -17,16 +17,16 @@ The system acts as an iperf3 server, allowing you to measure upload and download
 
 This project supports the following boards:
 
-- WIZnet Ethernet HAT
-- W5100S-EVB-Pico
-- W5500-EVB-Pico
-- W55RP20-EVB-Pico
-- W6100-EVB-Pico
-- W6300-EVB-Pico
-- W5100S-EVB-Pico2
-- W5500-EVB-Pico2
-- W6100-EVB-Pico2
-- W6300-EVB-Pico2
+- **[WIZnet Ethernet HAT][link-wiznet_ethernet_hat]**
+- **[W5100S-EVB-Pico][link-w5100s-evb-pico]**
+- **[W5500-EVB-Pico][link-w5500-evb-pico]**
+- **[W55RP20-EVB-Pico][link-w55rp20-evb-pico]**
+- **[W6100-EVB-Pico][link-w6100-evb-pico]**
+- **[W6300-EVB-Pico][link-w6300-evb-pico]**
+- **[W5100S-EVB-Pico2][link-w5100s-evb-pico2]**
+- **[W5500-EVB-Pico2][link-w5500-evb-pico2]**
+- **[W6100-EVB-Pico2][link-w6100-evb-pico2]**
+- **[W6300-EVB-Pico2][link-w6300-evb-pico2]**
 
 > The development environment was tested on **Windows** using **Visual Studio Code**. Please refer to the official Raspberry Pi Pico SDK guide for setup instructions.
 
@@ -112,3 +112,18 @@ Open a PowerShell or Command Prompt, move to the iperf3 installation directory, 
 ---
 
 Thank you for using WIZnet products for your high-speed Ethernet communication projects!
+
+
+<!--
+Link
+-->
+[link-wiznet_ethernet_hat]: https://docs.wiznet.io/Product/Open-Source-Hardware/wiznet_ethernet_hat
+[link-w5100s-evb-pico]: https://docs.wiznet.io/Product/iEthernet/W5100S/w5100s-evb-pico
+[link-w5500-evb-pico]: https://docs.wiznet.io/Product/iEthernet/W5500/w5500-evb-pico
+[link-w6100-evb-pico]: https://docs.wiznet.io/Product/iEthernet/W6100/w6100-evb-pico
+[link-w6300-evb-pico]: https://docs.wiznet.io/Product/iEthernet/W6300/w6300-evb-pico
+[link-w5100s-evb-pico2]: https://docs.wiznet.io/Product/iEthernet/W5100S/w5100s-evb-pico2
+[link-w5500-evb-pico2]: https://docs.wiznet.io/Product/iEthernet/W5500/w5500-evb-pico2
+[link-w6100-evb-pico2]: https://docs.wiznet.io/Product/iEthernet/W6100/w6100-evb-pico2
+[link-w6300-evb-pico2]: https://docs.wiznet.io/Product/iEthernet/W6300/w6300-evb-pico2
+[link-w55rp20-evb-pico]: https://docs.wiznet.io/Product/ioNIC/W55RP20/w55rp20-evb-pico
