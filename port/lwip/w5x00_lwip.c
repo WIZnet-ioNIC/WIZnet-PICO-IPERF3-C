@@ -90,18 +90,20 @@ int32_t recv_lwip(uint8_t sn, uint8_t *buf, uint16_t len)
         // byte size of data packet (2byte)
         pack_len = head[0];
         pack_len = (pack_len << 8) + head[1];
-        pack_len -= 2;
 
-        if (pack_len > len)
+        if (pack_len == 0)
         {
             // Packet is bigger than buffer - drop the packet
-            wiz_recv_ignore(sn, pack_len);
+            printf("No data received\n");
+            wiz_recv_ignore(sn, len);
             setSn_CR(sn, Sn_CR_RECV);
             return 0;
         }
 
+        pack_len -= 2;  // remove header size
         wiz_recv_data(sn, buf, pack_len); // data copy
         setSn_CR(sn, Sn_CR_RECV);
+        // while (getSn_CR(sn));
     }
 
     return (int32_t)pack_len;

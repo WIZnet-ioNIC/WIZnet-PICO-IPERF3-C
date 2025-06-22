@@ -301,7 +301,6 @@ void handle_create_streams(void)
     uint8_t cmd = CREATE_STREAMS;
     uint8_t received = 0;
 
-    send(SOCKET_CTRL, &cmd, 1);
 
     retval = socket(SOCKET_DATA, Sn_MR_MACRAW, PORT_IPERF, 0x20);
 
@@ -315,13 +314,19 @@ void handle_create_streams(void)
     netif_set_up(&g_netif);
 
     lwiperf_start_tcp_server_default(fn, NULL);
-    
-    received = recv_lwip(SOCKET_DATA, cookie, COOKIE_SIZE);
+    sleep_ms(3000); // Wait for the server to start
+    send(SOCKET_CTRL, &cmd, 1);
+
+    do{
+        getsockopt(SOCKET_DATA, SO_RECVBUF, &received);
+    }while(received == 0);
+
+    received = recv_lwip(SOCKET_DATA, cookie_LWIP, ETHERNET_BUF_MAX_SIZE-1);
 
 #ifdef IPERF_DEBUG
     if (received > 0)
     {
-        printf("[iperf] Received data cookie: %s\n", cookie);
+        printf("[iperf] Received data cookie: %s\n", cookie_LWIP + TCP_Offset);
     }
 #endif
 }
