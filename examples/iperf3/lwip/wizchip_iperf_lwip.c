@@ -109,6 +109,7 @@ static uint8_t g_iperf_buf[ETHERNET_BUF_MAX_SIZE * 2] = {
     0,
 };
 static uint8_t cookie[COOKIE_SIZE] = {0};
+static uint8_t cookie_LWIP[COOKIE_SIZE + TCP_Offset] = {0};
 
 /* Network */
 extern uint8_t mac[6];
