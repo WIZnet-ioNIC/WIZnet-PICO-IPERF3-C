@@ -1,14 +1,13 @@
-/**
- * Copyright (c) 2021 WIZnet Co.,Ltd
- *
- * SPDX-License-Identifier: BSD-3-Clause
- */
+/**    Copyright (c) 2021 WIZnet Co.,Ltd
+
+    SPDX-License-Identifier: BSD-3-Clause
+*/
 
 /**
- * ----------------------------------------------------------------------------------------------------
- * Includes
- * ----------------------------------------------------------------------------------------------------
- */
+    ----------------------------------------------------------------------------------------------------
+    Includes
+    ----------------------------------------------------------------------------------------------------
+*/
 #include <stdio.h>
 #include <string.h>
 
@@ -31,14 +30,10 @@
 #include "lwip/etharp.h"
 
 /**
- * ----------------------------------------------------------------------------------------------------
- * Macros
- * ----------------------------------------------------------------------------------------------------
- */
-/* Clock */
-// #define PLL_SYS_KHZ (133 * 1000)
-#define PLL_SYS_KHZ (90 * 1000)
-
+    ----------------------------------------------------------------------------------------------------
+    Macros
+    ----------------------------------------------------------------------------------------------------
+*/
 /* Buffer */
 #define ETHERNET_BUF_MAX_SIZE (1024 * TX_RX_MAX_SIZE / 2)
 
@@ -47,7 +42,7 @@
 #define SOCKET_CTRL 1
 
 /* Port */
-#define PORT_IPERF 5201
+#define PORT_IPERF 5001
 
 #define MAX_RESULT_LEN 1024
 
@@ -65,42 +60,51 @@
 #define IPERF_DONE 16
 
 /**
- * ----------------------------------------------------------------------------------------------------
- * Variables
- * ----------------------------------------------------------------------------------------------------
- */
+    ----------------------------------------------------------------------------------------------------
+    Variables
+    ----------------------------------------------------------------------------------------------------
+*/
 /* Network */
-static wiz_NetInfo g_net_info =
-    {
-        .mac = {0x00, 0x08, 0xDC, 0x12, 0x34, 0x56}, // MAC address
-        .ip = {192, 168, 11, 2},                     // IP address
-        .sn = {255, 255, 255, 0},                    // Subnet Mask
-        .gw = {192, 168, 11, 1},                     // Gateway
-        .dns = {8, 8, 8, 8},                         // DNS server
-#if _WIZCHIP_ > W5500  
-        .lla = {0xfe, 0x80, 0x00, 0x00,
-                0x00, 0x00, 0x00, 0x00,
-                0x02, 0x08, 0xdc, 0xff,
-                0xfe, 0x57, 0x57, 0x25},             // Link Local Address
-        .gua = {0x00, 0x00, 0x00, 0x00,
-                0x00, 0x00, 0x00, 0x00,
-                0x00, 0x00, 0x00, 0x00,
-                0x00, 0x00, 0x00, 0x00},             // Global Unicast Address
-        .sn6 = {0xff, 0xff, 0xff, 0xff,
-                0xff, 0xff, 0xff, 0xff,
-                0x00, 0x00, 0x00, 0x00,
-                0x00, 0x00, 0x00, 0x00},             // IPv6 Prefix
-        .gw6 = {0x00, 0x00, 0x00, 0x00,
-                0x00, 0x00, 0x00, 0x00,
-                0x00, 0x00, 0x00, 0x00,
-                0x00, 0x00, 0x00, 0x00},             // Gateway IPv6 Address
-        .dns6 = {0x20, 0x01, 0x48, 0x60,
-                0x48, 0x60, 0x00, 0x00,
-                0x00, 0x00, 0x00, 0x00,
-                0x00, 0x00, 0x88, 0x88},             // DNS6 server
-        .ipmode = NETINFO_STATIC_ALL
+static wiz_NetInfo g_net_info = {
+    .mac = {0x00, 0x08, 0xDC, 0x12, 0x34, 0x56}, // MAC address
+    .ip = {192, 168, 11, 2},                     // IP address
+    .sn = {255, 255, 255, 0},                    // Subnet Mask
+    .gw = {192, 168, 11, 1},                     // Gateway
+    .dns = {8, 8, 8, 8},                         // DNS server
+#if _WIZCHIP_ > W5500
+    .lla = {
+        0xfe, 0x80, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00,
+        0x02, 0x08, 0xdc, 0xff,
+        0xfe, 0x57, 0x57, 0x25
+    },             // Link Local Address
+    .gua = {
+        0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00
+    },             // Global Unicast Address
+    .sn6 = {
+        0xff, 0xff, 0xff, 0xff,
+        0xff, 0xff, 0xff, 0xff,
+        0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00
+    },             // IPv6 Prefix
+    .gw6 = {
+        0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00
+    },             // Gateway IPv6 Address
+    .dns6 = {
+        0x20, 0x01, 0x48, 0x60,
+        0x48, 0x60, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x88, 0x88
+    },             // DNS6 server
+    .ipmode = NETINFO_STATIC_ALL
 #else
-        .dhcp = NETINFO_STATIC        
+    .dhcp = NETINFO_STATIC
 #endif
 };
 
@@ -122,26 +126,24 @@ struct netif g_netif;
 lwiperf_report_fn fn;
 
 /**
- * ----------------------------------------------------------------------------------------------------
- * Functions
- * ----------------------------------------------------------------------------------------------------
- */
-/* Clock */
-static void set_clock_khz(void);
+    ----------------------------------------------------------------------------------------------------
+    Functions
+    ----------------------------------------------------------------------------------------------------
+*/
 void handle_param_exchange(bool *reverse);
 void handle_create_streams(void);
 void start_iperf_test(Stats *stats, bool reverse);
 void exchange_results(Stats *stats);
 
 /**
- * ----------------------------------------------------------------------------------------------------
- * Main
- * ----------------------------------------------------------------------------------------------------
- */
-int main()
-{
-    uint8_t memsize[2][8] = {{TX_RX_MAX_SIZE / 2 , TX_RX_MAX_SIZE / 2, 0, 0, 0, 0, 0, 0}, 
-                             {TX_RX_MAX_SIZE / 2 , TX_RX_MAX_SIZE / 2, 0, 0, 0, 0, 0, 0}};
+    ----------------------------------------------------------------------------------------------------
+    Main
+    ----------------------------------------------------------------------------------------------------
+*/
+int main() {
+    uint8_t memsize[2][8] = {{TX_RX_MAX_SIZE / 2, TX_RX_MAX_SIZE / 2, 0, 0, 0, 0, 0, 0},
+        {TX_RX_MAX_SIZE / 2, TX_RX_MAX_SIZE / 2, 0, 0, 0, 0, 0, 0}
+    };
     /* Initialize */
     bool reverse = false;
     uint8_t socket_status;
@@ -152,19 +154,20 @@ int main()
     IP4_ADDR(&g_mask, 255, 255, 255, 0);
     IP4_ADDR(&g_gateway, 192, 168, 11, 1);
 
-   // set_clock_khz();
     stdio_init_all();
 
     sleep_ms(1000 * 3); // wait for 3 seconds
 
-    wizchip_spi_initialize();
+
+    printf("system clock: %d MHz\n", clock_get_hz(clk_sys) / 1000000);    wizchip_spi_initialize();
     wizchip_cris_initialize();
 
     wizchip_reset();
     wizchip_initialize_whitout_buffer_set();
 
-    if (ctlwizchip(CW_INIT_WIZCHIP, (void *)memsize) == -1)
+    if (ctlwizchip(CW_INIT_WIZCHIP, (void *)memsize) == -1) {
         printf("wizchip initialized fail\n");
+    }
 
     wizchip_check();
 
@@ -187,31 +190,24 @@ int main()
 
     listen(SOCKET_CTRL);
 
-    while (1)
-    {
+    while (1) {
         iperf_stats_init(&stats, 1000);
 
         socket_status = getSn_SR(SOCKET_CTRL);
 
-        if (socket_status == SOCK_ESTABLISHED)
-        {
+        if (socket_status == SOCK_ESTABLISHED) {
             handle_param_exchange(&reverse);
             handle_create_streams();
 
-            if (reverse)
-            {
+            if (reverse) {
                 memset(g_iperf_buf, 0xAA, ETHERNET_BUF_MAX_SIZE / 2);
             }
-            
+
             start_iperf_test(&stats, reverse);
-        } 
-        else if (socket_status == SOCK_CLOSE_WAIT)
-        {
+        } else if (socket_status == SOCK_CLOSE_WAIT) {
             disconnect(SOCKET_CTRL);
             disconnect(SOCKET_DATA);
-        } 
-        else if (socket_status == SOCK_CLOSED)
-        {
+        } else if (socket_status == SOCK_CLOSED) {
             socket(SOCKET_CTRL, Sn_MR_TCP, PORT_IPERF, 0);
             listen(SOCKET_CTRL);
         }
@@ -219,28 +215,11 @@ int main()
 }
 
 /**
- * ----------------------------------------------------------------------------------------------------
- * Functions
- * ----------------------------------------------------------------------------------------------------
- */
-/* Clock */
-static void set_clock_khz(void)
-{
-    // set a system clock frequency in khz
-    set_sys_clock_khz(PLL_SYS_KHZ, true);
-
-    // configure the specified clock
-    clock_configure(
-        clk_peri,
-        0,                                                // No glitchless mux
-        CLOCKS_CLK_PERI_CTRL_AUXSRC_VALUE_CLKSRC_PLL_SYS, // System PLL on AUX mux
-        PLL_SYS_KHZ * 1000,                               // Input frequency
-        PLL_SYS_KHZ * 1000                                // Output (must be same as no divider)
-    );
-}
-
-void handle_param_exchange(bool *reverse) 
-{
+    ----------------------------------------------------------------------------------------------------
+    Functions
+    ----------------------------------------------------------------------------------------------------
+*/
+void handle_param_exchange(bool *reverse) {
     char buffer[512] = {0};
     uint8_t cmd;
     uint16_t len = 0;
@@ -251,8 +230,7 @@ void handle_param_exchange(bool *reverse)
     cJSON *udpItem;
 
     cookie_len = recv(SOCKET_CTRL, cookie, COOKIE_SIZE);
-    if (cookie_len != COOKIE_SIZE)
-    {
+    if (cookie_len != COOKIE_SIZE) {
         printf("[iperf] Failed to receive cookie. Received: %d bytes\n", cookie_len);
         return;
     }
@@ -278,12 +256,9 @@ void handle_param_exchange(bool *reverse)
 #endif
 
     json = cJSON_Parse(buffer);
-    if (json == NULL)
-    {
+    if (json == NULL) {
         printf("[iperf] Failed to parse JSON: %s\n", cJSON_GetErrorPtr());
-    }
-    else
-    {
+    } else {
         reverseItem = cJSON_GetObjectItem(json, "reverse");
 
         *reverse = (reverseItem && cJSON_IsBool(reverseItem)) ? reverseItem->valueint : 0;
@@ -296,8 +271,7 @@ void handle_param_exchange(bool *reverse)
     }
 }
 
-void handle_create_streams(void)
-{
+void handle_create_streams(void) {
     int8_t retval = 0;
     uint8_t cmd = CREATE_STREAMS;
     uint8_t received = 0;
@@ -305,12 +279,11 @@ void handle_create_streams(void)
 
     retval = socket(SOCKET_DATA, Sn_MR_MACRAW, PORT_IPERF, 0x20);
 
-    if (retval < 0)
-    {
+    if (retval < 0) {
         printf(" MACRAW socket open failed\n");
     }
 
-        // Set the default interface and bring it up
+    // Set the default interface and bring it up
     netif_set_link_up(&g_netif);
     netif_set_up(&g_netif);
 
@@ -318,22 +291,20 @@ void handle_create_streams(void)
     sleep_ms(3000); // Wait for the server to start
     send(SOCKET_CTRL, &cmd, 1);
 
-    do{
+    do {
         getsockopt(SOCKET_DATA, SO_RECVBUF, &received);
-    }while(received == 0);
+    } while (received == 0);
 
-    received = recv_lwip(SOCKET_DATA, cookie_LWIP, ETHERNET_BUF_MAX_SIZE-1);
+    received = recv_lwip(SOCKET_DATA, cookie_LWIP, ETHERNET_BUF_MAX_SIZE - 1);
 
 #ifdef IPERF_DEBUG
-    if (received > 0)
-    {
+    if (received > 0) {
         printf("[iperf] Received data cookie: %s\n", cookie_LWIP + TCP_Offset);
     }
 #endif
 }
 
-void start_iperf_test(Stats *stats, bool reverse)
-{
+void start_iperf_test(Stats *stats, bool reverse) {
     uint8_t cmd = 0;
     uint16_t sent_bytes = 0;
     uint16_t recv_bytes = 0;
@@ -352,61 +323,45 @@ void start_iperf_test(Stats *stats, bool reverse)
 
     iperf_stats_start(stats);
 
-    while (stats->running)
-    {
-        if (getSn_RX_RSR(SOCKET_CTRL) > 0)
-        {
+    while (stats->running) {
+        if (getSn_RX_RSR(SOCKET_CTRL) > 0) {
             recv(SOCKET_CTRL, &cmd, 1);
-            if (cmd == TEST_END)
-            {
+            if (cmd == TEST_END) {
                 stats->running = false;
                 break;
             }
         }
 
-        if (reverse)
-        {
+        if (reverse) {
             sent_bytes = send(SOCKET_DATA, g_iperf_buf, ETHERNET_BUF_MAX_SIZE / 2);
             iperf_stats_add_bytes(stats, sent_bytes);
-        }
-        else
-        {
+        } else {
             getsockopt(SOCKET_DATA, SO_RECVBUF, &pack_len);
 
-            if (pack_len > 0)
-            {
+            if (pack_len > 0) {
                 recv_bytes = recv_lwip(SOCKET_DATA, (uint8_t *)pack, ETHERNET_BUF_MAX_SIZE - 1);
 
-                if (recv_bytes)
-                {
+                if (recv_bytes) {
                     p = pbuf_alloc(PBUF_RAW, recv_bytes, PBUF_POOL);
                     pbuf_take(p, pack, recv_bytes);
                     free(pack);
 
                     pack = malloc(ETHERNET_BUF_MAX_SIZE);
-                }
-                else
-                {
+                } else {
                     printf(" No packet received\n");
                 }
 
-                if (recv_bytes && p != NULL)
-                {
+                if (recv_bytes && p != NULL) {
                     LINK_STATS_INC(link.recv);
 
-                    if (g_netif.input(p, &g_netif) != ERR_OK)
-                    {
+                    if (g_netif.input(p, &g_netif) != ERR_OK) {
                         pbuf_free(p);
                     }
                 }
                 iperf_stats_add_bytes(stats, recv_bytes);
-            }
-            else if (pack_len == 0)
-            {
+            } else if (pack_len == 0) {
                 iperf_stats_update(stats, false);
-            }
-            else
-            {
+            } else {
                 printf("[iperf] Error during data reception\n");
                 break;
             }
@@ -421,8 +376,7 @@ void start_iperf_test(Stats *stats, bool reverse)
     exchange_results(stats);
 }
 
-void exchange_results(Stats *stats) 
-{
+void exchange_results(Stats *stats) {
     uint8_t cmd = EXCHANGE_RESULTS;
     uint32_t result_len = 0;
     uint8_t length_bytes[4];
@@ -440,8 +394,7 @@ void exchange_results(Stats *stats)
     recv(SOCKET_CTRL, (uint8_t *)&result_len, 4);
     result_len = (result_len << 24) | ((result_len << 8) & 0x00FF0000) | ((result_len >> 8) & 0x0000FF00) | (result_len >> 24); // Convert to host-endian
 
-    if (result_len > sizeof(buffer))
-    {
+    if (result_len > sizeof(buffer)) {
         printf("[iperf] Received result length exceeds buffer size.\n");
         return;
     }

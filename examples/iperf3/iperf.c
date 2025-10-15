@@ -3,15 +3,14 @@
 #include <stdbool.h>
 #include <string.h>
 #include <time.h>
+#include "hardware/timer.h"
 #include "iperf.h"
 
-uint32_t get_time_us()
-{
+uint32_t get_time_us() {
     return (uint32_t)time_us_64();
 }
 
-void iperf_stats_init(Stats *stats, uint32_t pacing_timer_ms)
-{
+void iperf_stats_init(Stats *stats, uint32_t pacing_timer_ms) {
     stats->pacing_timer_us = pacing_timer_ms * 1000;
     stats->running = false;
     stats->t0 = 0;
@@ -23,8 +22,7 @@ void iperf_stats_init(Stats *stats, uint32_t pacing_timer_ms)
     stats->np1 = 0;
 }
 
-void iperf_stats_start(Stats *stats)
-{
+void iperf_stats_start(Stats *stats) {
     stats->running = true;
     stats->t0 = stats->t1 = get_time_us();
     stats->nb0 = stats->nb1 = 0;
@@ -32,9 +30,10 @@ void iperf_stats_start(Stats *stats)
     printf("Interval           Transfer     Bitrate\n");
 }
 
-void iperf_stats_update(Stats *stats, bool final)
-{
-    if (!stats->running) return;
+void iperf_stats_update(Stats *stats, bool final) {
+    if (!stats->running) {
+        return;
+    }
 
     uint32_t t2 = get_time_us();
     uint32_t dt = t2 - stats->t1;  // Elapsed time since last update
@@ -55,8 +54,7 @@ void iperf_stats_update(Stats *stats, bool final)
     }
 }
 
-void iperf_stats_stop(Stats *stats)
-{
+void iperf_stats_stop(Stats *stats) {
     stats->running = false;
 
     stats->t3 = get_time_us();
@@ -70,7 +68,9 @@ void iperf_stats_stop(Stats *stats)
 }
 
 void iperf_stats_add_bytes(Stats *stats, uint32_t n) {
-    if (!stats->running) return;
+    if (!stats->running) {
+        return;
+    }
 
     stats->nb0 += n;  // Increase total byte count
     stats->nb1 += n;  // Increase byte count per interval

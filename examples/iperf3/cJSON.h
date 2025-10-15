@@ -1,23 +1,23 @@
 /*
-  Copyright (c) 2009-2017 Dave Gamble and cJSON contributors
+    Copyright (c) 2009-2017 Dave Gamble and cJSON contributors
 
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files (the "Software"), to deal
-  in the Software without restriction, including without limitation the rights
-  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-  copies of the Software, and to permit persons to whom the Software is
-  furnished to do so, subject to the following conditions:
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
 
-  The above copyright notice and this permission notice shall be included in
-  all copies or substantial portions of the Software.
+    The above copyright notice and this permission notice shall be included in
+    all copies or substantial portions of the Software.
 
-  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-  THE SOFTWARE.
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+    THE SOFTWARE.
 */
 
 #ifndef cJSON__h
@@ -34,21 +34,21 @@ extern "C"
 
 #ifdef __WINDOWS__
 
-/* When compiling for windows, we specify a specific calling convention to avoid issues where we are being called from a project with a different default calling convention.  For windows you have 3 define options:
+/*  When compiling for windows, we specify a specific calling convention to avoid issues where we are being called from a project with a different default calling convention.  For windows you have 3 define options:
 
-CJSON_HIDE_SYMBOLS - Define this in the case where you don't want to ever dllexport symbols
-CJSON_EXPORT_SYMBOLS - Define this on library build when you want to dllexport symbols (default)
-CJSON_IMPORT_SYMBOLS - Define this if you want to dllimport symbol
+    CJSON_HIDE_SYMBOLS - Define this in the case where you don't want to ever dllexport symbols
+    CJSON_EXPORT_SYMBOLS - Define this on library build when you want to dllexport symbols (default)
+    CJSON_IMPORT_SYMBOLS - Define this if you want to dllimport symbol
 
-For *nix builds that support visibility attribute, you can define similar behavior by
+    For *nix builds that support visibility attribute, you can define similar behavior by
 
-setting default visibility to hidden by adding
--fvisibility=hidden (for gcc)
-or
--xldscope=hidden (for sun cc)
-to CFLAGS
+    setting default visibility to hidden by adding
+    -fvisibility=hidden (for gcc)
+    or
+    -xldscope=hidden (for sun cc)
+    to CFLAGS
 
-then using the CJSON_API_VISIBILITY flag to "export" the same symbols the way CJSON_EXPORT_SYMBOLS does
+    then using the CJSON_API_VISIBILITY flag to "export" the same symbols the way CJSON_EXPORT_SYMBOLS does
 
 */
 
@@ -100,8 +100,7 @@ then using the CJSON_API_VISIBILITY flag to "export" the same symbols the way CJ
 #define cJSON_StringIsConst 512
 
 /* The cJSON structure: */
-typedef struct cJSON
-{
+typedef struct cJSON {
     /* next/prev allow you to walk array/object chains. Alternatively, use GetArraySize/GetArrayItem/GetObjectItem */
     struct cJSON *next;
     struct cJSON *prev;
@@ -122,23 +121,22 @@ typedef struct cJSON
     char *string;
 } cJSON;
 
-typedef struct cJSON_Hooks
-{
-      /* malloc/free are CDECL on Windows regardless of the default calling convention of the compiler, so ensure the hooks allow passing those functions directly. */
-      void *(CJSON_CDECL *malloc_fn)(size_t sz);
-      void (CJSON_CDECL *free_fn)(void *ptr);
+typedef struct cJSON_Hooks {
+    /* malloc/free are CDECL on Windows regardless of the default calling convention of the compiler, so ensure the hooks allow passing those functions directly. */
+    void *(CJSON_CDECL *malloc_fn)(size_t sz);
+    void (CJSON_CDECL *free_fn)(void *ptr);
 } cJSON_Hooks;
 
 typedef int cJSON_bool;
 
-/* Limits how deeply nested arrays/objects can be before cJSON rejects to parse them.
- * This is to prevent stack overflows. */
+/*  Limits how deeply nested arrays/objects can be before cJSON rejects to parse them.
+    This is to prevent stack overflows. */
 #ifndef CJSON_NESTING_LIMIT
 #define CJSON_NESTING_LIMIT 1000
 #endif
 
-/* Limits the length of circular references can be before cJSON rejects to parse them.
- * This is to prevent stack overflows. */
+/*  Limits the length of circular references can be before cJSON rejects to parse them.
+    This is to prevent stack overflows. */
 #ifndef CJSON_CIRCULAR_LIMIT
 #define CJSON_CIRCULAR_LIMIT 10000
 #endif
@@ -209,16 +207,16 @@ CJSON_PUBLIC(cJSON *) cJSON_CreateRaw(const char *raw);
 CJSON_PUBLIC(cJSON *) cJSON_CreateArray(void);
 CJSON_PUBLIC(cJSON *) cJSON_CreateObject(void);
 
-/* Create a string where valuestring references a string so
- * it will not be freed by cJSON_Delete */
+/*  Create a string where valuestring references a string so
+    it will not be freed by cJSON_Delete */
 CJSON_PUBLIC(cJSON *) cJSON_CreateStringReference(const char *string);
-/* Create an object/array that only references it's elements so
- * they will not be freed by cJSON_Delete */
+/*  Create an object/array that only references it's elements so
+    they will not be freed by cJSON_Delete */
 CJSON_PUBLIC(cJSON *) cJSON_CreateObjectReference(const cJSON *child);
 CJSON_PUBLIC(cJSON *) cJSON_CreateArrayReference(const cJSON *child);
 
-/* These utilities create an Array of count items.
- * The parameter count cannot be greater than the number of elements in the number array, otherwise array access will be out of bounds.*/
+/*  These utilities create an Array of count items.
+    The parameter count cannot be greater than the number of elements in the number array, otherwise array access will be out of bounds.*/
 CJSON_PUBLIC(cJSON *) cJSON_CreateIntArray(const int *numbers, int count);
 CJSON_PUBLIC(cJSON *) cJSON_CreateFloatArray(const float *numbers, int count);
 CJSON_PUBLIC(cJSON *) cJSON_CreateDoubleArray(const double *numbers, int count);
@@ -227,9 +225,9 @@ CJSON_PUBLIC(cJSON *) cJSON_CreateStringArray(const char *const *strings, int co
 /* Append item to the specified array/object. */
 CJSON_PUBLIC(cJSON_bool) cJSON_AddItemToArray(cJSON *array, cJSON *item);
 CJSON_PUBLIC(cJSON_bool) cJSON_AddItemToObject(cJSON *object, const char *string, cJSON *item);
-/* Use this when string is definitely const (i.e. a literal, or as good as), and will definitely survive the cJSON object.
- * WARNING: When this function was used, make sure to always check that (item->type & cJSON_StringIsConst) is zero before
- * writing to `item->string` */
+/*  Use this when string is definitely const (i.e. a literal, or as good as), and will definitely survive the cJSON object.
+    WARNING: When this function was used, make sure to always check that (item->type & cJSON_StringIsConst) is zero before
+    writing to `item->string` */
 CJSON_PUBLIC(cJSON_bool) cJSON_AddItemToObjectCS(cJSON *object, const char *string, cJSON *item);
 /* Append reference to item to the specified array/object. Use this when you want to add an existing cJSON to a new cJSON, but don't want to corrupt your existing cJSON. */
 CJSON_PUBLIC(cJSON_bool) cJSON_AddItemReferenceToArray(cJSON *array, cJSON *item);
@@ -248,25 +246,25 @@ CJSON_PUBLIC(void) cJSON_DeleteItemFromObjectCaseSensitive(cJSON *object, const 
 CJSON_PUBLIC(cJSON_bool) cJSON_InsertItemInArray(cJSON *array, int which, cJSON *newitem); /* Shifts pre-existing items to the right. */
 CJSON_PUBLIC(cJSON_bool) cJSON_ReplaceItemViaPointer(cJSON * const parent, cJSON * const item, cJSON * replacement);
 CJSON_PUBLIC(cJSON_bool) cJSON_ReplaceItemInArray(cJSON *array, int which, cJSON *newitem);
-CJSON_PUBLIC(cJSON_bool) cJSON_ReplaceItemInObject(cJSON *object,const char *string,cJSON *newitem);
-CJSON_PUBLIC(cJSON_bool) cJSON_ReplaceItemInObjectCaseSensitive(cJSON *object,const char *string,cJSON *newitem);
+CJSON_PUBLIC(cJSON_bool) cJSON_ReplaceItemInObject(cJSON *object, const char *string, cJSON *newitem);
+CJSON_PUBLIC(cJSON_bool) cJSON_ReplaceItemInObjectCaseSensitive(cJSON *object, const char *string, cJSON *newitem);
 
 /* Duplicate a cJSON item */
 CJSON_PUBLIC(cJSON *) cJSON_Duplicate(const cJSON *item, cJSON_bool recurse);
-/* Duplicate will create a new, identical cJSON item to the one you pass, in new memory that will
- * need to be released. With recurse!=0, it will duplicate any children connected to the item.
- * The item->next and ->prev pointers are always zero on return from Duplicate. */
-/* Recursively compare two cJSON items for equality. If either a or b is NULL or invalid, they will be considered unequal.
- * case_sensitive determines if object keys are treated case sensitive (1) or case insensitive (0) */
+/*  Duplicate will create a new, identical cJSON item to the one you pass, in new memory that will
+    need to be released. With recurse!=0, it will duplicate any children connected to the item.
+    The item->next and ->prev pointers are always zero on return from Duplicate. */
+/*  Recursively compare two cJSON items for equality. If either a or b is NULL or invalid, they will be considered unequal.
+    case_sensitive determines if object keys are treated case sensitive (1) or case insensitive (0) */
 CJSON_PUBLIC(cJSON_bool) cJSON_Compare(const cJSON * const a, const cJSON * const b, const cJSON_bool case_sensitive);
 
-/* Minify a strings, remove blank characters(such as ' ', '\t', '\r', '\n') from strings.
- * The input pointer json cannot point to a read-only address area, such as a string constant, 
- * but should point to a readable and writable address area. */
+/*  Minify a strings, remove blank characters(such as ' ', '\t', '\r', '\n') from strings.
+    The input pointer json cannot point to a read-only address area, such as a string constant,
+    but should point to a readable and writable address area. */
 CJSON_PUBLIC(void) cJSON_Minify(char *json);
 
-/* Helper functions for creating and adding items to an object at the same time.
- * They return the added item or NULL on failure. */
+/*  Helper functions for creating and adding items to an object at the same time.
+    They return the added item or NULL on failure. */
 CJSON_PUBLIC(cJSON*) cJSON_AddNullToObject(cJSON * const object, const char * const name);
 CJSON_PUBLIC(cJSON*) cJSON_AddTrueToObject(cJSON * const object, const char * const name);
 CJSON_PUBLIC(cJSON*) cJSON_AddFalseToObject(cJSON * const object, const char * const name);

@@ -13,9 +13,6 @@ cmake_minimum_required(VERSION 3.12)
 # set(BOARD_NAME W6100_EVB_PICO2)
 set(BOARD_NAME W6300_EVB_PICO2)
 
-# Set WIZchip Clock Speed
-add_definitions(-D_WIZCHIP_SPI_SCLK_SPEED=43) # SPEED MHz
-
 if(${BOARD_NAME} STREQUAL WIZnet_Ethernet_HAT)
     #set(PICO_PLATFORM rp2350) #If you are using WIZnet_ethernet_HAT with Pico2, uncomment it.
     set(WIZNET_CHIP W5100S)
@@ -116,21 +113,12 @@ if(NOT DEFINED WIZNET_DIR)
     message(STATUS "WIZNET_DIR = ${WIZNET_DIR}")
 endif()
 
-if(NOT DEFINED MBEDTLS_DIR)
-    set(MBEDTLS_DIR ${CMAKE_SOURCE_DIR}/libraries/mbedtls)
-    message(STATUS "MBEDTLS_DIR = ${MBEDTLS_DIR}")
-endif()
-
 if(NOT DEFINED PORT_DIR)
     set(PORT_DIR ${CMAKE_SOURCE_DIR}/port)
     message(STATUS "PORT_DIR = ${PORT_DIR}")
 endif()
 
-# Turn off mbedtls test mode 
-set(ENABLE_PROGRAMS OFF CACHE BOOL "Build mbedtls programs")
-set(ENABLE_TESTING OFF CACHE BOOL "Build mbedtls testing")
-add_definitions(-DMBEDTLS_CONFIG_FILE="${PORT_DIR}/mbedtls/inc/ssl_config.h")
-add_definitions(-DSET_TRUSTED_CERT_IN_SAMPLES)
+add_definitions(-DPICO_USE_FASTEST_SUPPORTED_CLOCK=1)
 
 # Set compile options
 add_compile_options(
@@ -138,7 +126,7 @@ add_compile_options(
         -Wno-format          # int != int32_t as far as the compiler is concerned because gcc has int32_t as long int
         -Wno-unused-function # we have some for the docs that aren't called
         -Wno-maybe-uninitialized
-        
+        -Ofast
         )
 
 # Hardware-specific examples in subdirectories:
@@ -146,6 +134,5 @@ add_subdirectory(examples)
 
 # Add libraries in subdirectories
 add_subdirectory(${CMAKE_SOURCE_DIR}/libraries)
-add_subdirectory(${MBEDTLS_DIR})
 add_subdirectory(${PORT_DIR})
 
