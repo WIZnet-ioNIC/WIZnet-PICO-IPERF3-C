@@ -196,7 +196,6 @@ static void wizchip_critical_section_unlock(void) {
 void wizchip_spi_initialize(void) {
 #ifdef USE_PIO
     spi_handle = wiznet_spi_pio_open(&g_spi_config);
-    //spi_handle = wiznet_spi_sw_open(&g_spi_config);
     (*spi_handle)->set_active(spi_handle);
 #else
     // this example will use SPI0 at clk_sys / 4
