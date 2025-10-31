@@ -128,9 +128,16 @@ void exchange_results(Stats *stats);
     ----------------------------------------------------------------------------------------------------
 */
 int main() {
+
+#if _WIZCHIP_ ==  W5100S
+    uint8_t memsize[2][4] = {{TX_RX_MAX_SIZE / 2, TX_RX_MAX_SIZE / 2, 0, 0},
+                             {TX_RX_MAX_SIZE / 2, TX_RX_MAX_SIZE / 2, 0, 0}
+    };
+#else 
     uint8_t memsize[2][8] = {{TX_RX_MAX_SIZE / 2, TX_RX_MAX_SIZE / 2, 0, 0, 0, 0, 0, 0},
         {TX_RX_MAX_SIZE / 2, TX_RX_MAX_SIZE / 2, 0, 0, 0, 0, 0, 0}
     };
+#endif 
     /* Initialize */
     uint8_t socket_status;
     Stats stats;

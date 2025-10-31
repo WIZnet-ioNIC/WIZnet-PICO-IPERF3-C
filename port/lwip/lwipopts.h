@@ -36,7 +36,7 @@
 /* Prevent having to link sys_arch.c (we don't test the API layers in unit tests) */
 
 #if (_WIZCHIP_ == W5100S)
-#define TX_RX_MAX_SIZE  4
+#define TX_RX_MAX_SIZE  8
 #elif (_WIZCHIP_ == W5500)
 #define TX_RX_MAX_SIZE  16
 #elif (_WIZCHIP_ == W6100)
